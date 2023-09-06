@@ -1,10 +1,9 @@
 package com.demis.sample.model;
 
-
-import com.demis.sample.dtos.customer.CreatCustomerRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Entity
@@ -16,7 +15,9 @@ public class Customer extends Person {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private List<Address> address;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "customer")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+
     private Order order;
 
 
