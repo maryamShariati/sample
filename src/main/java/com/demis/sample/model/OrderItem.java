@@ -11,8 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "order_app")
-public class Order {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -21,6 +21,8 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
+    private Long productCode;
 
     @Column(nullable = false)
     private String name;
@@ -53,6 +55,10 @@ public class Product {
     @ToString.Exclude
     private Category category;
 
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id",referencedColumnName = "id")
+    private Seller seller;
+
 
     @Override
     public String toString() {
@@ -68,6 +74,7 @@ public class Product {
                 ", deleted=" + deleted +
                 ", image=" + image +
                 ", category=" + category +
+                ", seller=" + seller +
                 '}';
     }
 

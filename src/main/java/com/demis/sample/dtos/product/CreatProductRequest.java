@@ -2,9 +2,8 @@ package com.demis.sample.dtos.product;
 
 
 import com.demis.sample.model.Category;
-import com.demis.sample.model.Image;
 import com.demis.sample.model.Product;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.demis.sample.model.Seller;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,30 +11,42 @@ import java.time.LocalDateTime;
 
 public record CreatProductRequest(
         @NotNull
-        @JsonProperty("name") String name,
+        String nationalCode,
+         String firstName,
+         String lastName,
+        String storeName,
         @NotNull
-        @JsonProperty("quantity") int quantity,
-        @JsonProperty("color") String color,
-        @JsonProperty("size") String size,
+         String name,
         @NotNull
-        @JsonProperty("creatOn") LocalDateTime creatOn,
+        int quantity,
+        String color,
+        String size,
         @NotNull
-        @JsonProperty("price") BigDecimal price,
-        @JsonProperty("image") Image image,
+        LocalDateTime creatOn,
         @NotNull
-        @JsonProperty("category") Category category) {
+         BigDecimal price,
+        @NotNull
+         String category) {
 
-
-        public static Product fromDto(CreatProductRequest productRequest){
+        public static Product productFromDto(CreatProductRequest productRequest){
                 Product product=new Product();
+                Category category1=new Category();
                 product.setName(productRequest.name());
                 product.setQuantity(productRequest.quantity());
                 product.setColor(productRequest.color());
                 product.setSize(productRequest.size());
                 product.setCreateOn(productRequest.creatOn());
                 product.setPrice(productRequest.price());
-                product.setImage(productRequest.image());
-                product.setCategory(productRequest.category());
+                category1.setName(productRequest.category);
+                product.setCategory(category1);
                 return product;
+        }
+        public static Seller sellerFromDto(CreatProductRequest creatProductRequest){
+                Seller seller=new Seller();
+                seller.setNationalCode(creatProductRequest.nationalCode());
+                seller.setFirstName(creatProductRequest.firstName());
+                seller.setLastName(creatProductRequest.lastName());
+                seller.setStoreName(creatProductRequest.storeName());
+                return seller;
         }
 }

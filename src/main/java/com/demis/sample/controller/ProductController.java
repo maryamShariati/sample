@@ -6,10 +6,12 @@ import com.demis.sample.dtos.product.GetProductListResponse;
 import com.demis.sample.exception.RecordNotFoundException;
 import com.demis.sample.model.Product;
 import com.demis.sample.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,41 +22,60 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @PostMapping
-    public void creatProduct(@RequestBody CreatProductRequest creatProduct){
-        productService.creatProduct(creatProduct);
+    @GetMapping("/showProductForm")
+    public ModelAndView showProductForm(ModelAndView model) {
+        model.setViewName("createProductForm");
+        return model;
+    }
+    @GetMapping("/showProductCard")
+    public ModelAndView showProduct(ModelAndView model) {
+        model.setViewName("productCard");
+        return model;
     }
 
-    @GetMapping("/{categoryName}")
-    public ModelAndView getProductByCategory(@PathVariable String categoryName){
+    @PostMapping("/creatProduct")
+    public ModelAndView creatProduct( @Valid CreatProductRequest creatProduct, ModelAndView model) {
+        var seller = CreatProductRequest.sellerFromDto(creatProduct);
+        var product = CreatProductRequest.productFromDto(creatProduct);
+        var product1 = productService.creatProduct(seller, product);
+        if (product1 != null) {
+            model.setViewName("okResponse");
+        } else {
+            model.setViewName("notOkResponse");
+        }
+        return model;
+    }
+
+    @GetMapping("/list/{categoryName}")
+    public ModelAndView getProductByCategory(@PathVariable String categoryName,ModelAndView model) {
         List<Product> productByCategory = productService.getProductByCategory(categoryName);
-        List<GetProductListResponse> list= productByCategory.stream().map(
+        List<GetProductListResponse> list = productByCategory.stream().map(
                 GetProductListResponse::fromProduct
         ).toList();
 
-        return new ModelAndView("seeProductByCategory.jsp","GetProductListResponse",list);
+        model.setViewName("productCard");
+        model.addObject("list",productByCategory);
+        return model;
     }
 
     @GetMapping("/{id}")
     public GetDetailProductResponse getProductDetail(@PathVariable Long id) throws RecordNotFoundException {
-       var product= productService.getDetailProduct(id);
-       return new GetDetailProductResponse(product.getName(), product.getQuantity(), product.getColor(), product.getPrice(),product.getImage(),product.getCategory().getName());
+        var product = productService.getDetailProduct(id);
+        return GetDetailProductResponse.fromProductDetail(product);
     }
 
-    @PatchMapping("/update/{id}/{price}/{updateOn}")
-    public void updatePriceById(@PathVariable Long id,@PathVariable BigDecimal price,@PathVariable LocalDateTime updateOn) throws RecordNotFoundException {
-        productService.updatePriceById(id,price,updateOn);
+    @PatchMapping("/update/{productCode}/{price}/{updateOn}")
+    public void updatePriceByProductCode(@PathVariable Long productCode, @PathVariable BigDecimal price, @PathVariable LocalDateTime updateOn) throws RecordNotFoundException {
+        productService.updatePriceByProductCode(productCode, price, updateOn);
     }
 
-    @PatchMapping("/update/{id}/{quantity}/{updateOn}")
-    public void updateQuantityById(@PathVariable Long id,@PathVariable int quantity,@PathVariable LocalDateTime updateOn) throws RecordNotFoundException {
-        productService.updateQuantityById(id, quantity, updateOn);
+    @PatchMapping("/update/{productCode}/{quantity}/{updateOn}")
+    public void updateQuantityByProductCode(@PathVariable Long productCode, @PathVariable int quantity, @PathVariable LocalDateTime updateOn) throws RecordNotFoundException {
+        productService.updateQuantityByProductCode(productCode, quantity, updateOn);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteById(@PathVariable Long id) throws RecordNotFoundException {
-        productService.deleteProductById(id);
+    @DeleteMapping("/delete/{productCode}")
+    public void deleteByProductCode(@PathVariable Long productCode) throws RecordNotFoundException {
+        productService.deleteProductByProductCode(productCode);
     }
-
-
 }

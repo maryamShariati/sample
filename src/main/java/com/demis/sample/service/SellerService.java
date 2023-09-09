@@ -1,12 +1,13 @@
 package com.demis.sample.service;
 
-import com.demis.sample.dtos.seller.CreatSellerRequest;
 import com.demis.sample.model.Seller;
 import com.demis.sample.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,12 +15,17 @@ public class SellerService {
 
     private static SellerRepository sellerRepository;
 
-     public void creatSeller(CreatSellerRequest creatSellerRequest){
-         sellerRepository.save(CreatSellerRequest.fromDto(creatSellerRequest));
+     public Seller creatSeller(Seller seller){
+         return sellerRepository.save(seller);
      }
 
-    public List<Seller> getAllSeller(){
-        return new ArrayList<>(sellerRepository.findAll()) ;
+     public Optional<Seller> getSellerByNationalCode(String nationalCode){
+         return sellerRepository.getSellerByNationalCode(nationalCode);
+     }
+
+    public Page<Seller> getAllSeller(Pageable pageable){
+        return  sellerRepository.findAll(pageable) ;
     }
+
 
 }

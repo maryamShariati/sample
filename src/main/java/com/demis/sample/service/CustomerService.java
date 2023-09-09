@@ -1,13 +1,16 @@
 package com.demis.sample.service;
 
 
-import com.demis.sample.dtos.customer.CreatCustomerRequest;
+import com.demis.sample.model.Address;
 import com.demis.sample.model.Customer;
+import com.demis.sample.repository.AddressRepository;
 import com.demis.sample.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -15,12 +18,23 @@ import java.util.List;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
 
-    public void creatCustomer(CreatCustomerRequest creatCustomer){
-        customerRepository.save(CreatCustomerRequest.fromDto(creatCustomer));
+
+    public Customer creatCustomer(Customer customer, Address address){
+        var customersByNationalCode = customerRepository.getCustomersByNationalCode(customer.getNationalCode());
+        var addressByPostalCode = addressRepository.getAddressByPostalCode(address.getPostalCode());
+        if (addressByPostalCode.isEmpty()){
+            addressRepository.save(address);
+        }
+        if (customersByNationalCode.isEmpty()){
+            customer.setAddress(address);
+            customerRepository.save(customer);
+        }
+        return customer;
     }
 
-    public List<Customer>getAllCustomer(){
-       return new ArrayList<>(customerRepository.findAll()) ;
+    public List<Customer>getAllCustomer(Pageable pageable){
+       return new ArrayList<>((Collection) customerRepository.findAll(pageable)) ;
     }
 }

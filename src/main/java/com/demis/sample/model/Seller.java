@@ -1,11 +1,12 @@
 package com.demis.sample.model;
 
-import com.demis.sample.dtos.seller.CreatSellerRequest;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Set;
 
 @Entity
 @Setter
@@ -15,6 +16,10 @@ public class Seller extends Person {
 
     @Column(nullable = false)
     private String storeName;
+
+    @OneToMany(mappedBy = "seller",fetch = FetchType.LAZY)
+    private Set<Product> products;
+
 
 
 
@@ -27,9 +32,9 @@ public class Seller extends Person {
                     firstname = %s ,
                     lastname = %s ,
                     storeName=%s,
-                    
+                    product=%s,
                 }
-                """.formatted(getId(),getNationalCode(), getFirstName(), getLastName(),getStoreName());
+                """.formatted(getId(),getNationalCode(), getFirstName(), getLastName(),getStoreName(),getProducts());
     }
 
     @Override

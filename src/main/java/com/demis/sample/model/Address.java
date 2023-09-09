@@ -23,9 +23,11 @@ public class Address {
     private String alley;
     @Column(nullable = false)
     private String plaque;
+    @Column(nullable = false,unique = true)
+    private String postalCode;
     private String email;
     @Column(nullable = false)
-    private String PhoneNumber;
+    private String phoneNumber;
 
 
     @Override
@@ -37,8 +39,9 @@ public class Address {
                 ", street='" + street + '\'' +
                 ", alley='" + alley + '\'' +
                 ", plaque='" + plaque + '\'' +
+                ", postalCode='" + postalCode + '\'' +
                 ", email='" + email + '\'' +
-                ", PhoneNumber='" + PhoneNumber + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 

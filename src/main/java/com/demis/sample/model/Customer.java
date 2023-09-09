@@ -11,14 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 public class Customer extends Person {
 
-    @OneToMany()
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private List<Address> address;
+    @OneToOne(optional = false)
+    private Address address;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
-
-    private Order order;
+    private OrderItem order;
 
 
     @Override
