@@ -10,9 +10,9 @@
 <nav class="navbar bg-body-tertiary" >
     <div class="container-fluid" >
         <div class="back-home rounded-4">
-            <a class="navbar-brand" href="/home"  style="color: #198754">backToHome</a>
+            <a class="navbar-brand" href="#"  style="color: #198754">backToHome</a>
         </div>
-        <form action="/products/update/" class="d-flex" role="search">
+        <form class="d-flex" role="search">
             <input class="form-control me-2"   type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success " type="submit">Search</button>
         </form>

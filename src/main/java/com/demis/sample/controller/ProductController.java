@@ -1,17 +1,17 @@
 package com.demis.sample.controller;
 
+
 import com.demis.sample.dtos.product.CreatProductRequest;
 import com.demis.sample.dtos.product.GetDetailProductResponse;
 import com.demis.sample.dtos.product.GetProductListResponse;
 import com.demis.sample.exception.RecordNotFoundException;
 import com.demis.sample.model.Product;
 import com.demis.sample.service.ProductService;
-import jakarta.validation.Valid;
+import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,26 +23,25 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/showProductForm")
-    public ModelAndView showProductForm(ModelAndView model) {
-        model.setViewName("createProductForm");
-        return model;
+    public String showProductForm(Model model) {
+        var creatProduct=new CreatProductRequest();
+        model.addAttribute("creatProduct",creatProduct);
+        return "createProductForm";
+    }
+
+    @PostMapping("/creatProduct")
+    public String creatProduct( @ModelAttribute("creatProduct") CreatProductRequest creatProduct) {
+        var seller = creatProduct.sellerFromDto();
+        var product = creatProduct.productFromDto();
+        var product1 = productService.creatProduct(seller, product);
+        if (product1 != null) {
+            return "okResponse";
+        }
+        return "notOkResponse";
     }
     @GetMapping("/showProductCard")
     public ModelAndView showProduct(ModelAndView model) {
         model.setViewName("productCard");
-        return model;
-    }
-
-    @PostMapping("/creatProduct")
-    public ModelAndView creatProduct( @Valid CreatProductRequest creatProduct, ModelAndView model) {
-        var seller = CreatProductRequest.sellerFromDto(creatProduct);
-        var product = CreatProductRequest.productFromDto(creatProduct);
-        var product1 = productService.creatProduct(seller, product);
-        if (product1 != null) {
-            model.setViewName("okResponse");
-        } else {
-            model.setViewName("notOkResponse");
-        }
         return model;
     }
 

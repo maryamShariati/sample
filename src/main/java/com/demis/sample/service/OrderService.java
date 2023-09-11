@@ -13,8 +13,6 @@ import java.util.Optional;
 public class OrderService {
     private static OrderRepository orderRepository;
 
-
-
     public Collection<OrderItem> getAllOrder(Long id){
         return orderRepository.getAllOrderByCustomerId(id);
 
